@@ -38,7 +38,7 @@ public class Inventory {
 	
 	private Date ExpiryDate ;
 	
-	@ManyToOne(optional = true)
+	
 	  @JoinColumn(name = "supplier_id")
 	  private Supplier supplier;
 	public Supplier getSupplier() {
