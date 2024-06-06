@@ -8,7 +8,7 @@ public class Supplier {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private Long supplierId;
 	private String name;
 	
 public Supplier(String name) {
@@ -16,11 +16,11 @@ public Supplier(String name) {
 		this.name = name;
 		
 	}
-	public Long getId() {
-		return id;
+	public Long getSupplierId() {
+		return supplierId;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setSupplierId(Long supplierId) {
+		this.supplierId = supplierId;
 	}
 	
 	public String getName() {

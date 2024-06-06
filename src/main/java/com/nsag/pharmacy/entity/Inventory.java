@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -35,6 +37,16 @@ public class Inventory {
 	private int ReorderPoint;
 	
 	private Date ExpiryDate ;
+	
+	@ManyToOne(optional = true)
+	  @JoinColumn(name = "supplier_id")
+	  private Supplier supplier;
+	public Supplier getSupplier() {
+		return supplier;
+	}
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
+	}
 	public Inventory() {
 		
 	}
@@ -103,7 +115,7 @@ public class Inventory {
 		return "Inventory [InventoryID=" + InventoryID + ", name=" + name + ", Description=" + Description
 				+ ", DosageForm=" + DosageForm + ", Strength=" + Strength + ", UnitPrice=" + UnitPrice
 				+ ", CurrentStock=" + CurrentStock + ", ReorderPoint=" + ReorderPoint + ", ExpiryDate=" + ExpiryDate
-				+ "]";
+				+ ", supplier=" + supplier + "]";
 	}
 	
 }
