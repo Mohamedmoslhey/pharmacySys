@@ -40,6 +40,7 @@ public class Inventory {
 	
 	
 	  @JoinColumn(name = "supplier_id")
+	  @ManyToOne
 	  private Supplier supplier;
 	public Supplier getSupplier() {
 		return supplier;
@@ -53,6 +54,13 @@ public class Inventory {
 	public Inventory(String name) {
 		
 		this.name = name;
+		
+	}
+	
+public Inventory(String name,Supplier supplier) {
+		
+		this.name = name;
+		this.supplier = supplier;
 		
 	}
 	public Long getInventoryID() {

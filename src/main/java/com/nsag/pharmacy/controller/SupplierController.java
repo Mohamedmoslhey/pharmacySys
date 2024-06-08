@@ -19,73 +19,72 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nsag.pharmacy.entity.Inventory;
+import com.nsag.pharmacy.entity.Supplier;
 import com.nsag.pharmacy.helper.InventoryModelAssembler;
-import com.nsag.pharmacy.repositry.InventoryRepository;
-import com.nsag.pharmacy.service.InventoryService;
+import com.nsag.pharmacy.helper.SupplierModelAssembler;
+
+import com.nsag.pharmacy.repositry.SupplierRepository;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
-public class InventoryController {
+public class SupplierController {
 	
 	@Autowired
-	private InventoryRepository inventoryRepository;
-	
+	private SupplierRepository supplierRepository;
 	@Autowired
-	private InventoryService inventoryService;
-	@Autowired
-	private  InventoryModelAssembler assembler;
+	private  SupplierModelAssembler assembler;
 	
-	@GetMapping("/Medicines")
-	public CollectionModel<EntityModel<Inventory>> ListMedicine(){
+	@GetMapping("/Suppliers")
+	public CollectionModel<EntityModel<Supplier>> ListSupplier(){
 		
-		List<EntityModel<Inventory>> medicines = inventoryRepository.findAll().stream()
+		List<EntityModel<Supplier>> suppliers = supplierRepository.findAll().stream()
 			    .map(assembler::toModel)
 			    .collect(Collectors.toList());
-		return CollectionModel.of(medicines,
-			      linkTo(methodOn(InventoryController.class).ListMedicine()).withSelfRel());
+		return CollectionModel.of(suppliers,
+			      linkTo(methodOn(SupplierController.class).ListSupplier()).withSelfRel());
 	}
 	
-	@GetMapping("/Medicines/{id}")
-	public EntityModel<Inventory> getMedicine(@PathVariable Long id){
+	@GetMapping("/Suppliers/{id}")
+	public EntityModel<Supplier> getSupplier(@PathVariable Long id){
 		
-		Inventory emp = inventoryRepository.findById(id).orElseThrow(() ->
+		Supplier sup = supplierRepository.findById(id).orElseThrow(() ->
         new InventoryNotFoundException(id));
-		return assembler.toModel(emp);
+		return assembler.toModel(sup);
 	}
 	
-	@PostMapping("/Medicines")
-	public ResponseEntity<?> newMedicine(@RequestBody Inventory Inventory){
-		EntityModel<Inventory> entityModel = assembler.toModel(inventoryService.saveItemInInventory(Inventory));
+	@PostMapping("/Suppliers")
+	public ResponseEntity<?> newSupplier(@RequestBody Supplier supplier){
+		EntityModel<Supplier> entityModel = assembler.toModel(supplierRepository.save(supplier));
 		
 		return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
 			      .body(entityModel);
 	}
 	
-	@PutMapping("/Medicines/{id}")
-	ResponseEntity<?>  replaceMedicine(@RequestBody Inventory newInventory, @PathVariable Long id) {
-		Inventory emp =
-				inventoryRepository.findById(id)
-	      .map(Inventory -> {
-	        Inventory.setName(newInventory.getName());
+	@PutMapping("/Suppliers/{id}")
+	public ResponseEntity<?>  replaceSupplier(@RequestBody Supplier newsupplier, @PathVariable Long id) {
+		Supplier supp =
+				supplierRepository.findById(id)
+	      .map(supplier -> {
+	    	  supplier.setName(newsupplier.getName());
 	        
-	        return inventoryRepository.save(Inventory);
+	        return supplierRepository.save(supplier);
 	      })
 	      .orElseGet(() -> {
-	        newInventory.setInventoryID(id);
-	        return inventoryRepository.save(newInventory);
+	    	  newsupplier.setSupplierId(id);
+	        return supplierRepository.save(newsupplier);
 	      });
-		 EntityModel<Inventory> entityModel = assembler.toModel(emp);
+		 EntityModel<Supplier> entityModel = assembler.toModel(supp);
 
 		  return ResponseEntity //
 		      .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
 		      .body(entityModel);
 	  }
 
-	  @DeleteMapping("/Inventorys/{id}")
+	  @DeleteMapping("/Suppliers/{id}")
 	  ResponseEntity<?> deleteMedicine(@PathVariable Long id) {
 
-		  inventoryRepository.deleteById(id);
+		  supplierRepository.deleteById(id);
 
 		  return ResponseEntity.noContent().build();
 		}
